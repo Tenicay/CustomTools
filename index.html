@@ -4,75 +4,22 @@
     <meta charset="UTF-8">
     <title>Python Code Runner Chatbot</title>
     <!-- Content Security Policy -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://pyscript.net; style-src 'self' https://pyscript.net;">
+    <meta http-equiv="Content-Security-Policy" content="
+      default-src 'self'; 
+      script-src 'self' https://pyscript.net https://cdn.jsdelivr.net; 
+      style-src 'self' https://pyscript.net; 
+      img-src 'self' data:;
+      connect-src 'self';
+      font-src 'self' https://pyscript.net;
+    ">
     <!-- Include PyScript CSS and JS -->
     <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css">
     <script defer src="https://pyscript.net/latest/pyscript.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        #main-container {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-        }
-        #chat-section {
-            width: 35%;
-            border-right: 1px solid #ccc;
-            padding: 20px;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-        }
-        #chat-container {
-            flex: 1;
-            border: 1px solid #ccc;
-            padding: 10px;
-            overflow-y: auto;
-            margin-bottom: 10px;
-        }
-        #user-input-container {
-            display: flex;
-        }
-        #user-input {
-            flex: 1;
-            padding: 10px;
-            font-size: 16px;
-        }
-        #send-button {
-            padding: 10px 20px;
-            font-size: 16px;
-            margin-left: 10px;
-            cursor: pointer;
-        }
-        #code-section {
-            flex: 1;
-            padding: 20px;
-            box-sizing: border-box;
-            overflow-y: auto;
-        }
-        #code-execution-container {
-            margin-top: 20px;
-        }
-        #output {
-            background-color: #f4f4f4;
-            padding: 10px;
-            margin-top: 10px;
-            border: 1px solid #ccc;
-            white-space: pre-wrap;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-    </style>
+    <!-- Link External CSS -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1 style="text-align: center; padding: 10px;">Python Code Runner Chatbot</h1>
+    <h1>Python Code Runner Chatbot</h1>
     <div id="main-container">
         <!-- Chat Section -->
         <div id="chat-section">
@@ -96,69 +43,7 @@
             <div id="output"></div>
         </div>
     </div>
-    <script>
-        // Function to append messages to the chat container
-        function appendMessage(sender, message) {
-            const chatContainer = document.getElementById('chat-container');
-            const messageElement = document.createElement('p');
-            messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
-            chatContainer.appendChild(messageElement);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
-        // Function to inject PyScript code into the container and display output
-        function injectPyScript(code) {
-            const container = document.getElementById('code-execution-container');
-            // Clear previous code
-            container.innerHTML = '';
-            document.getElementById('output').textContent = '';
-
-            // Create a new py-script element
-            const pyScriptElement = document.createElement('py-script');
-            pyScriptElement.setAttribute('output', 'output');
-            pyScriptElement.innerHTML = code;
-
-            // Append the py-script element to the container
-            container.appendChild(pyScriptElement);
-        }
-
-        // Event listener for the Send button
-        document.getElementById('send-button').addEventListener('click', async () => {
-            const userInput = document.getElementById('user-input').value;
-            if (userInput.trim() === '') return;
-            appendMessage('You', userInput);
-            document.getElementById('user-input').value = '';
-
-            // Send the user input to the chatbot's API (Netlify function)
-            try {
-                const response = await fetch('/.netlify/functions/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ message: userInput }),
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    const botReply = data.reply;
-                    appendMessage('Bot', botReply);
-
-                    // Extract PyScript code from the bot's reply
-                    const pyScriptMatch = botReply.match(/<py-script>([\s\S]*?)<\/py-script>/i);
-                    if (pyScriptMatch) {
-                        const pyScriptCode = pyScriptMatch[1].trim();
-                        injectPyScript(pyScriptCode);
-                    }
-                } else {
-                    const errorData = await response.json();
-                    appendMessage('Bot', `Error: ${errorData.error}`);
-                }
-            } catch (error) {
-                console.error('Error communicating with chatbot:', error);
-                appendMessage('Bot', 'Error: Unable to communicate with the chatbot.');
-            }
-        });
-    </script>
+    <!-- Link External JS -->
+    <script src="scripts.js"></script>
 </body>
 </html>

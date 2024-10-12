@@ -1,2 +1,7 @@
 [build]
   functions = "functions"
+  
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://pyscript.net https://cdn.jsdelivr.net; style-src 'self' https://pyscript.net; img-src 'self' data:; connect-src 'self'; font-src 'self' https://pyscript.net;"

@@ -4,48 +4,41 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
-}
-
-#container {
-    display: flex;
     height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
-
-#chat-area, #code-area {
+h1 {
+    text-align: center;
+    padding: 10px;
+    background-color: #f2f2f2;
+    margin: 0;
+    border-bottom: 1px solid #ccc;
+}
+#main-container {
+    display: flex;
     flex: 1;
-    padding: 20px;
-    box-sizing: border-box;
     overflow: hidden;
 }
-
-#chat-area {
+#chat-section {
+    width: 35%;
     border-right: 1px solid #ccc;
-    background-color: #ffffff;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 }
-
-#code-area {
-    background-color: #f9f9f9;
-}
-
-h2 {
-    margin-top: 0;
-    text-align: center;
-}
-
-#conversation {
-    height: calc(100% - 150px);
-    overflow-y: auto;
+#chat-container {
+    flex: 1;
     border: 1px solid #ccc;
     padding: 10px;
-    background-color: #fdfdfd;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    background-color: #fff;
 }
-
-#input-area {
+#user-input-container {
     display: flex;
-    margin-top: 10px;
 }
-
 #user-input {
     flex: 1;
     padding: 10px;
@@ -53,44 +46,49 @@ h2 {
     border: 1px solid #ccc;
     border-radius: 4px;
 }
-
-#send-button, #run-code-button {
+#send-button {
     padding: 10px 20px;
-    margin-left: 10px;
     font-size: 16px;
-    background-color: #007BFF;
+    margin-left: 10px;
+    cursor: pointer;
+    background-color: #4CAF50;
     color: white;
     border: none;
     border-radius: 4px;
-    cursor: pointer;
 }
-
-#send-button:hover, #run-code-button:hover {
-    background-color: #0056b3;
+#send-button:hover {
+    background-color: #45a049;
 }
-
-#code-editor {
-    width: 100%;
-    height: 300px;
-    margin-top: 10px;
-}
-
-#output-area {
-    height: 200px;
+#code-section {
+    flex: 1;
+    padding: 20px;
+    box-sizing: border-box;
     overflow-y: auto;
-    background: #eaeaea;
+    background-color: #fafafa;
+}
+#code-section h2 {
+    text-align: center;
+}
+#code-execution-container {
+    margin-top: 20px;
+}
+#output {
+    background-color: #f4f4f4;
     padding: 10px;
+    margin-top: 10px;
     border: 1px solid #ccc;
-    border-radius: 4px;
     white-space: pre-wrap;
+    max-height: 200px;
+    overflow-y: auto;
+    border-radius: 4px;
 }
-
-.user-message {
-    color: blue;
-    margin-bottom: 5px;
-}
-
-.bot-message {
-    color: green;
-    margin-bottom: 5px;
+/* Responsive Design for Smaller Screens */
+@media (max-width: 768px) {
+    #main-container {
+        flex-direction: column;
+    }
+    #chat-section, #code-section {
+        width: 100%;
+        height: 50%;
+    }
 }
