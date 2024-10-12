@@ -1,93 +1,51 @@
-// netlify/functions/chat.js
+const { Configuration, OpenAIApi } = require('openai');
 
-const fetch = require('node-fetch');
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
-exports.handler = async function(event, context) {
-    try {
-        // Only allow POST requests
-        if (event.httpMethod !== 'POST') {
-            return {
-                statusCode: 405,
-                headers: { 'Allow': 'POST' },
-                body: JSON.stringify({ error: 'Method Not Allowed' }),
-            };
-        }
+const openai = new OpenAIApi(configuration);
 
-        const { message } = JSON.parse(event.body);
+exports.handler = async function (event, context) {
+  const body = JSON.parse(event.body);
 
-        if (!message || message.trim() === '') {
-            return {
-                statusCode: 400,
-                body: JSON.stringify({ error: 'No message provided.' }),
-            };
-        }
+  const systemPrompt = `
+You are a coding assistant specialized in generating Python code that can be executed in the browser using PyScript. When a user requests code, provide only the Python code enclosed within <py-script> and </py-script> tags. Do not include code fences or additional explanations. Ensure that the code is syntactically correct and ready to be executed with PyScript.
 
-        // OpenAI API Key (Stored in Netlify Environment Variables)
-        const apiKey = process.env.OPENAI_API_KEY;
+If the code requires HTML elements (like input fields or buttons), include them in the response as well.
 
-        if (!apiKey) {
-            return {
-                statusCode: 500,
-                body: JSON.stringify({ error: 'Server configuration error: Missing API key.' }),
-            };
-        }
+Do not include any markdown formatting or triple backticks in your response.
 
-        // Prepare the messages array for GPT-4 Chat Completion API
-        const messages = [
-            { 
-                role: 'system', 
-                content: `You are an assistant that provides Python code solutions executable directly in the browser using PyScript. 
-                          When user requests interactive features (like input()), replace them with HTML-based input elements.
-                          Provide the necessary HTML elements and JavaScript event listeners along with the Python code.
-                          Ensure all Python code is wrapped within <py-script> tags.
-                          Do not include external libraries or dependencies; use only standard Python libraries supported by PyScript.` 
-            },
-            { 
-                role: 'user', 
-                content: message 
-            }
-        ];
+For example, if the user asks for a script to print "Hello, World!", you should respond:
 
-        // Call OpenAI Chat Completion API with GPT-4
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${apiKey}`,
-            },
-            body: JSON.stringify({
-                model: 'gpt-4o-2024-05-13',
-                messages: messages,
-                max_tokens: 2000, // Increased for more comprehensive code generation
-                temperature: 0.5,
-            }),
-        });
+<py-script>
+print("Hello, World!")
+</py-script>
+`;
 
-        const data = await response.json();
+  const userMessage = body.message;
 
-        if (response.ok) {
-            const reply = data.choices[0].message.content.trim();
-            return {
-                statusCode: 200,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*', // Adjust as needed for CORS
-                },
-                body: JSON.stringify({ reply: reply }),
-            };
-        } else {
-            console.error('OpenAI API Error:', data);
-            return {
-                statusCode: 500,
-                body: JSON.stringify({ error: data.error.message || 'Failed to fetch response from OpenAI.' }),
-            };
-        }
+  try {
+    const completion = await openai.createChatCompletion({
+      model: 'gpt-4o-2024-05-13', // or 'gpt-3.5-turbo' if GPT-4 is not available
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userMessage },
+      ],
+      max_tokens: 2000,
+    });
 
-    } catch (error) {
-        console.error('Error in chat function:', error);
-        return {
-            statusCode: 500,
-            body: JSON.stringify({ error: 'Internal Server Error' }),
-        };
-    }
+    const assistantReply = completion.data.choices[0].message.content;
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ reply: assistantReply }),
+    };
+  } catch (error) {
+    console.error('Error communicating with OpenAI:', error.response.data);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: 'An error occurred while processing your request.' }),
+    };
+  }
 };
