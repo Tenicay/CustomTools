@@ -26,11 +26,29 @@ exports.handler = async function(event, context) {
         const clientId = process.env.JDOODLE_CLIENT_ID;
         const clientSecret = process.env.JDOODLE_CLIENT_SECRET;
 
-        // Prepare the payload
+        if (!clientId || !clientSecret) {
+            return {
+                statusCode: 500,
+                body: JSON.stringify({ error: 'Server configuration error: Missing JDoodle credentials.' }),
+            };
+        }
+
+        // Extract Python code from the chatbot's response
+        const codeBlockMatch = code.match(/```python([\s\S]*?)```/);
+        if (!codeBlockMatch) {
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ error: 'No valid Python code block found in the response.' }),
+            };
+        }
+
+        const pythonCode = codeBlockMatch[1].trim();
+
+        // Prepare the payload for JDoodle API
         const payload = {
-            script: code,
+            script: pythonCode,
             language: "python3",
-            versionIndex: "3", // Adjust based on JDoodle's API documentation
+            versionIndex: "3",
             clientId: clientId,
             clientSecret: clientSecret
         };
