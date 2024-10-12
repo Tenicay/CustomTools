@@ -5,24 +5,33 @@
     <title>ChatBot with Code Execution</title>
     <!-- Link to CSS file -->
     <link rel="stylesheet" href="styles.css">
+    <!-- CodeMirror CSS for syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
 </head>
 <body>
     <div id="container">
         <!-- Chat Area -->
         <div id="chat-area">
+            <h2>Chatbot</h2>
             <div id="conversation"></div>
-            <input type="text" id="user-input" placeholder="Type your message...">
-            <button id="send-button">Send</button>
+            <div id="input-area">
+                <input type="text" id="user-input" placeholder="Type your message...">
+                <button id="send-button">Send</button>
+            </div>
         </div>
         <!-- Code Area -->
         <div id="code-area">
+            <h2>Code Editor</h2>
             <textarea id="code-editor" placeholder="Code will appear here..."></textarea>
             <button id="run-code-button">Run Code</button>
+            <h2>Output</h2>
             <div id="output-area"></div>
         </div>
     </div>
+    <!-- CodeMirror JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
     <!-- Link to JavaScript file -->
     <script src="script.js"></script>
 </body>
 </html>
-

@@ -56,7 +56,7 @@ async function sendMessage(userInput) {
         // Update Bot Message
         botMessageElement.textContent = `Bot: ${botReply}`;
 
-        // If the bot reply contains code, display it in the code editor
+        // If reply contains code, display it in code editor
         if (isCode(botReply)) {
             codeEditor.setValue(botReply);
             codeEditor.setOption('readOnly', false); // Make editable if user wants to modify
@@ -142,81 +142,4 @@ function scrollToBottomOutput() {
 function isCode(message) {
     // Simple check: if message contains 'def ' or 'import ' or has multiple lines
     return message.includes('def ') || message.includes('import ') || message.split('\n').length > 1;
-}
-// script.js
-
-// ... [Previous Code Remains the Same]
-
-async function sendMessage(userInput) {
-    appendMessage('You', userInput, 'user-message');
-
-    // Clear Input Field
-    document.getElementById('user-input').value = '';
-
-    // Display Bot is typing...
-    const botMessageElement = appendMessage('Bot', 'Typing...', 'bot-message');
-
-    try {
-        // Send POST request to Chat API
-        const response = await fetch('/.netlify/functions/chat', { // Relative path for Netlify Functions
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ message: userInput })
-        });
-
-        if (!response.ok) {
-            throw new Error(`Server error: ${response.status}`);
-        }
-
-        const data = await response.json();
-        const botReply = data.reply;
-
-        // Update Bot Message
-        botMessageElement.textContent = `Bot: ${botReply}`;
-
-        // If reply contains code, display it in code editor
-        if (isCode(botReply)) {
-            codeEditor.setValue(botReply);
-            codeEditor.setOption('readOnly', false); // Make editable if user wants to modify
-        }
-
-    } catch (error) {
-        console.error('Error:', error);
-        botMessageElement.textContent = `Bot: Sorry, I encountered an error. Please try again.`;
-    }
-
-    // Scroll to Bottom
-    scrollToBottom();
-}
-
-// ... [Rest of the Code Remains the Same]
-
-async function runCode(code) {
-    appendOutput('Running code...');
-
-    try {
-        // Send POST request to Execute API
-        const response = await fetch('/.netlify/functions/execute', { // Relative path for Netlify Functions
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ code: code })
-        });
-
-        if (!response.ok) {
-            throw new Error(`Server error: ${response.status}`);
-        }
-
-        const data = await response.json();
-        const output = data.output;
-
-        appendOutput(output);
-
-    } catch (error) {
-        console.error('Error:', error);
-        appendOutput('Error: Unable to execute code. Please try again.');
-    }
 }
