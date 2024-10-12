@@ -25,19 +25,29 @@ exports.handler = async function(event, context) {
         // OpenAI API Key (Stored in Netlify Environment Variables)
         const apiKey = process.env.OPENAI_API_KEY;
 
-        // Prepare the prompt
+        if (!apiKey) {
+            return {
+                statusCode: 500,
+                body: JSON.stringify({ error: 'Server configuration error: Missing API key.' }),
+            };
+        }
+
+        // Prepare the prompt for GPT-4
         const prompt = `You are an intelligent assistant. Provide a Python code solution to the following request:\n\n${message}`;
 
-        // Call OpenAI API
-        const response = await fetch('https://api.openai.com/v1/completions', {
+        // Call OpenAI Chat Completion API with GPT-4
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${apiKey}`,
             },
             body: JSON.stringify({
-                model: 'text-davinci-003',
-                prompt: prompt,
+                model: 'gpt-4',
+                messages: [
+                    { role: 'system', content: 'You are an assistant that provides Python code solutions.' },
+                    { role: 'user', content: message }
+                ],
                 max_tokens: 300,
                 temperature: 0.5,
             }),
@@ -46,7 +56,7 @@ exports.handler = async function(event, context) {
         const data = await response.json();
 
         if (response.ok) {
-            const reply = data.choices[0].text.trim();
+            const reply = data.choices[0].message.content.trim();
             return {
                 statusCode: 200,
                 headers: {
