@@ -1,5 +1,3 @@
-// scripts.js
-
 // Function to append messages to the chat container
 function appendMessage(sender, message) {
     const chatContainer = document.getElementById('chat-container');
@@ -13,6 +11,10 @@ function appendMessage(sender, message) {
 function injectPyScript(code) {
     const container = document.getElementById('code-execution-container');
     const outputDiv = document.getElementById('output');
+    
+    // Log the code being injected for debugging
+    console.log('Injecting PyScript code:', code);
+
     // Clear previous code and output
     container.innerHTML = '';
     outputDiv.textContent = '';
@@ -52,6 +54,10 @@ document.getElementById('send-button').addEventListener('click', async () => {
             const pyScriptMatch = botReply.match(/<py-script>([\s\S]*?)<\/py-script>/i);
             if (pyScriptMatch) {
                 const pyScriptCode = pyScriptMatch[1].trim();
+                
+                // Log the extracted PyScript code for debugging
+                console.log('Extracted PyScript code:', pyScriptCode);
+
                 injectPyScript(pyScriptCode);
             } else if (data.error) {
                 appendMessage('Bot', `Error: ${data.error}`);
