@@ -27,7 +27,7 @@ print("Hello, World!")
 
   try {
     const completion = await openai.createChatCompletion({
-      model: 'gpt-4o-2024-05-13', // or 'gpt-3.5-turbo' if GPT-4 is not available
+      model: 'gpt-3.5-turbo', // or 'gpt-3.5-turbo' if GPT-4 is not available
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userMessage },
