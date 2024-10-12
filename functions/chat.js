@@ -36,7 +36,11 @@ exports.handler = async function(event, context) {
         const messages = [
             { 
                 role: 'system', 
-                content: 'You are an assistant that provides Python code solutions that can be executed directly in the browser using PyScript. Wrap all Python code within <py-script> tags. Do not include any additional HTML or JavaScript; the frontend will handle that.' 
+                content: `You are an assistant that provides Python code solutions executable directly in the browser using PyScript. 
+                          When user requests interactive features (like input()), replace them with HTML-based input elements.
+                          Provide the necessary HTML elements and JavaScript event listeners along with the Python code.
+                          Ensure all Python code is wrapped within <py-script> tags.
+                          Do not include external libraries or dependencies; use only standard Python libraries supported by PyScript.` 
             },
             { 
                 role: 'user', 
@@ -54,7 +58,7 @@ exports.handler = async function(event, context) {
             body: JSON.stringify({
                 model: 'gpt-4o-2024-05-13',
                 messages: messages,
-                max_tokens: 2000,
+                max_tokens: 2000, // Increased for more comprehensive code generation
                 temperature: 0.5,
             }),
         });
@@ -67,7 +71,7 @@ exports.handler = async function(event, context) {
                 statusCode: 200,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*', // Adjust as needed
+                    'Access-Control-Allow-Origin': '*', // Adjust as needed for CORS
                 },
                 body: JSON.stringify({ reply: reply }),
             };
