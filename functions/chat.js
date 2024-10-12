@@ -34,8 +34,14 @@ exports.handler = async function(event, context) {
 
         // Prepare the messages array for GPT-4 Chat Completion API
         const messages = [
-            { role: 'system', content: 'You are an assistant that provides Python code solutions.' },
-            { role: 'user', content: message }
+            { 
+                role: 'system', 
+                content: 'You are an assistant that provides Python code solutions that can be executed directly in the browser using PyScript. Wrap all Python code within <py-script> tags. Do not include any additional HTML or JavaScript; the frontend will handle that.' 
+            },
+            { 
+                role: 'user', 
+                content: message 
+            }
         ];
 
         // Call OpenAI Chat Completion API with GPT-4
@@ -48,7 +54,7 @@ exports.handler = async function(event, context) {
             body: JSON.stringify({
                 model: 'gpt-4o-2024-05-13',
                 messages: messages,
-                max_tokens: 3000,
+                max_tokens: 2000,
                 temperature: 0.5,
             }),
         });
@@ -69,7 +75,7 @@ exports.handler = async function(event, context) {
             console.error('OpenAI API Error:', data);
             return {
                 statusCode: 500,
-                body: JSON.stringify({ error: 'Failed to fetch response from OpenAI.' }),
+                body: JSON.stringify({ error: data.error.message || 'Failed to fetch response from OpenAI.' }),
             };
         }
 
