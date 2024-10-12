@@ -53,10 +53,14 @@ document.getElementById('send-button').addEventListener('click', async () => {
             if (pyScriptMatch) {
                 const pyScriptCode = pyScriptMatch[1].trim();
                 injectPyScript(pyScriptCode);
+            } else if (data.error) {
+                appendMessage('Bot', `Error: ${data.error}`);
+            } else {
+                console.warn('No <py-script> code found and no error message provided.');
             }
         } else {
             const errorData = await response.json();
-            appendMessage('Bot', `Error: ${errorData.error}`);
+            appendMessage('Bot', `Error: ${errorData.error || 'Unknown error occurred.'}`);
         }
     } catch (error) {
         console.error('Error communicating with chatbot:', error);
