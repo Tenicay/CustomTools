@@ -46,9 +46,9 @@ exports.handler = async function(event, context) {
                 'Authorization': `Bearer ${apiKey}`,
             },
             body: JSON.stringify({
-                model: 'gpt-4',
+                model: 'gpt-4o-2024-05-13',
                 messages: messages,
-                max_tokens: 300,
+                max_tokens: 3000,
                 temperature: 0.5,
             }),
         });
