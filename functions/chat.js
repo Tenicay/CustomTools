@@ -1,4 +1,4 @@
-// functions/chat.js
+// netlify/functions/chat.js
 
 const fetch = require('node-fetch');
 
@@ -25,7 +25,7 @@ exports.handler = async function(event, context) {
         // OpenAI API Key (Stored in Netlify Environment Variables)
         const apiKey = process.env.OPENAI_API_KEY;
 
-        // Prepare the prompt (You can customize this as needed)
+        // Prepare the prompt
         const prompt = `You are an intelligent assistant. Provide a Python code solution to the following request:\n\n${message}`;
 
         // Call OpenAI API

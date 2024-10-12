@@ -1,4 +1,4 @@
-// functions/execute.js
+// netlify/functions/execute.js
 
 const fetch = require('node-fetch');
 
