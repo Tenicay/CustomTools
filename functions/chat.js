@@ -32,8 +32,11 @@ exports.handler = async function(event, context) {
             };
         }
 
-        // Prepare the prompt for GPT-4
-        const prompt = `You are an intelligent assistant. Provide a Python code solution to the following request:\n\n${message}`;
+        // Prepare the messages array for GPT-4 Chat Completion API
+        const messages = [
+            { role: 'system', content: 'You are an assistant that provides Python code solutions.' },
+            { role: 'user', content: message }
+        ];
 
         // Call OpenAI Chat Completion API with GPT-4
         const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -44,10 +47,7 @@ exports.handler = async function(event, context) {
             },
             body: JSON.stringify({
                 model: 'gpt-4',
-                messages: [
-                    { role: 'system', content: 'You are an assistant that provides Python code solutions.' },
-                    { role: 'user', content: message }
-                ],
+                messages: messages,
                 max_tokens: 300,
                 temperature: 0.5,
             }),
