@@ -3,25 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <title>Python Code Runner Chatbot</title>
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://pyscript.net; style-src 'self' https://pyscript.net;">
     <!-- Include PyScript CSS and JS -->
     <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css">
     <script defer src="https://pyscript.net/latest/pyscript.js"></script>
-    <!-- Content Security Policy -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://pyscript.net; style-src 'self' https://pyscript.net;">
     <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-        }
         body {
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
             display: flex;
             flex-direction: column;
-            height: 100%;
         }
-        #chat-interface {
+        #main-container {
+            display: flex;
             flex: 1;
+            overflow: hidden;
+        }
+        #chat-section {
+            width: 35%;
+            border-right: 1px solid #ccc;
+            padding: 20px;
+            box-sizing: border-box;
             display: flex;
             flex-direction: column;
         }
@@ -30,23 +35,30 @@
             border: 1px solid #ccc;
             padding: 10px;
             overflow-y: auto;
+            margin-bottom: 10px;
         }
         #user-input-container {
             display: flex;
-            padding: 10px;
         }
         #user-input {
             flex: 1;
             padding: 10px;
+            font-size: 16px;
         }
         #send-button {
             padding: 10px 20px;
+            font-size: 16px;
             margin-left: 10px;
+            cursor: pointer;
+        }
+        #code-section {
+            flex: 1;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
         }
         #code-execution-container {
-            padding: 20px;
-            flex: 1;
-            overflow-y: auto;
+            margin-top: 20px;
         }
         #output {
             background-color: #f4f4f4;
@@ -54,66 +66,60 @@
             margin-top: 10px;
             border: 1px solid #ccc;
             white-space: pre-wrap;
-            max-height: 300px;
+            max-height: 200px;
             overflow-y: auto;
-        }
-        /* Ensure the code execution area uses full browser width */
-        #code-execution-container, #output {
-            width: 100%;
         }
     </style>
 </head>
 <body>
-    <h1>Python Code Runner Chatbot</h1>
-
-    <!-- Chat Interface -->
-    <div id="chat-interface">
-        <div id="chat-container">
-            <!-- Chat messages will appear here -->
+    <h1 style="text-align: center; padding: 10px;">Python Code Runner Chatbot</h1>
+    <div id="main-container">
+        <!-- Chat Section -->
+        <div id="chat-section">
+            <h2>Chat</h2>
+            <div id="chat-container">
+                <!-- Chat messages will appear here -->
+            </div>
+            <div id="user-input-container">
+                <input type="text" id="user-input" placeholder="Type your message...">
+                <button id="send-button">Send</button>
+            </div>
         </div>
-        <div id="user-input-container">
-            <input type="text" id="user-input" placeholder="Type your message...">
-            <button id="send-button">Send</button>
+        <!-- Code Execution Section -->
+        <div id="code-section">
+            <h2>Code Execution</h2>
+            <!-- Container to Inject Generated PyScript Code -->
+            <div id="code-execution-container">
+                <!-- Generated PyScript code will be injected here -->
+            </div>
+            <!-- Output Display -->
+            <div id="output"></div>
         </div>
     </div>
-
-    <!-- Container to Inject Generated PyScript Code and HTML -->
-    <div id="code-execution-container">
-        <!-- Generated PyScript code and HTML will be injected here -->
-    </div>
-
-    <!-- Output Display -->
-    <div id="output"></div>
-
     <script>
         // Function to append messages to the chat container
         function appendMessage(sender, message) {
             const chatContainer = document.getElementById('chat-container');
-            const messageElement = document.createElement('div');
+            const messageElement = document.createElement('p');
             messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
             chatContainer.appendChild(messageElement);
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        // Function to inject PyScript code and HTML into the container
-        function injectCode(pythonCode, htmlCode) {
+        // Function to inject PyScript code into the container and display output
+        function injectPyScript(code) {
             const container = document.getElementById('code-execution-container');
             // Clear previous code
             container.innerHTML = '';
             document.getElementById('output').textContent = '';
 
-            // Append HTML code if present
-            if (htmlCode) {
-                container.innerHTML += htmlCode;
-            }
-
             // Create a new py-script element
-            if (pythonCode) {
-                const pyScriptElement = document.createElement('py-script');
-                pyScriptElement.setAttribute('output', 'output');
-                pyScriptElement.innerHTML = pythonCode;
-                container.appendChild(pyScriptElement);
-            }
+            const pyScriptElement = document.createElement('py-script');
+            pyScriptElement.setAttribute('output', 'output');
+            pyScriptElement.innerHTML = code;
+
+            // Append the py-script element to the container
+            container.appendChild(pyScriptElement);
         }
 
         // Event listener for the Send button
@@ -138,22 +144,12 @@
                     const botReply = data.reply;
                     appendMessage('Bot', botReply);
 
-                    // Extract PyScript code and HTML code from the bot's reply
+                    // Extract PyScript code from the bot's reply
                     const pyScriptMatch = botReply.match(/<py-script>([\s\S]*?)<\/py-script>/i);
-                    const htmlMatch = botReply.replace(/<py-script>[\s\S]*?<\/py-script>/i, '').trim();
-
-                    let pythonCode = '';
-                    let htmlCode = '';
-
                     if (pyScriptMatch) {
-                        pythonCode = pyScriptMatch[1].trim();
+                        const pyScriptCode = pyScriptMatch[1].trim();
+                        injectPyScript(pyScriptCode);
                     }
-
-                    if (htmlMatch) {
-                        htmlCode = htmlMatch;
-                    }
-
-                    injectCode(pythonCode, htmlCode);
                 } else {
                     const errorData = await response.json();
                     appendMessage('Bot', `Error: ${errorData.error}`);
