@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Python Code Runner Chatbot</title>
-    <!-- Content Security Policy -->
+    <!-- Updated Content Security Policy -->
     <meta http-equiv="Content-Security-Policy" content="
-      default-src 'self'; 
-      script-src 'self' https://pyscript.net https://cdn.jsdelivr.net; 
-      style-src 'self' https://pyscript.net; 
+      default-src 'self';
+      script-src 'self' 'unsafe-eval' https://pyscript.net https://cdn.jsdelivr.net;
+      style-src 'self' https://pyscript.net https://cdn.jsdelivr.net;
       img-src 'self' data:;
-      connect-src 'self';
+      connect-src 'self' https://api.openai.com;
       font-src 'self' https://pyscript.net;
     ">
     <!-- Include PyScript CSS and JS -->
