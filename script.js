@@ -37,8 +37,8 @@ async function sendMessage(userInput) {
     const botMessageElement = appendMessage('Bot', 'Typing...', 'bot-message');
 
     try {
-        // Send POST request to Chat API
-        const response = await fetch('/.netlify/functions/chat', { // Relative path for Netlify Functions
+        // Send POST request to Chat API with Absolute URL
+        const response = await fetch('https://eloquent-mousse-08996f.netlify.app/.netlify/functions/chat', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -84,8 +84,8 @@ async function runCode(code) {
     appendOutput('Running code...');
 
     try {
-        // Send POST request to Execute API
-        const response = await fetch('/.netlify/functions/execute', { // Relative path for Netlify Functions
+        // Send POST request to Execute API with Absolute URL
+        const response = await fetch('https://eloquent-mousse-08996f.netlify.app/.netlify/functions/execute', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
