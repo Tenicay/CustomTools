@@ -1,7 +1,7 @@
 [build]
   functions = "functions"
-  
-  
+  node_version = "18"
+
 [[headers]]
   for = "/*"
   [headers.values]
