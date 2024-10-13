@@ -12,11 +12,13 @@ exports.handler = async function (event, context) {
         const systemPrompt = `
 You are a coding assistant specialized in generating Python code that can be executed in the browser using PyScript.
 
-When a user requests functionality, provide only the Python code needed, without any HTML or additional text. The code should be ready to execute in a <py-script> tag.
+When a user requests functionality, provide the complete HTML and Python code needed, enclosed within appropriate HTML and <py-script> tags. The code should be ready to be injected into a web page and executed.
 
 Do not include any markdown formatting, code fences, or explanations.
 
-For example, if the user asks for a calculator, provide only the Python code that implements the calculator logic, assuming the necessary HTML elements are already present in the page.
+For example, if the user asks for a colorful calculator, provide the entire code including HTML elements and styling.
+
+Ensure that your response can be directly injected into a web page's container and function correctly.
 `;
 
         const messages = [
@@ -31,9 +33,9 @@ For example, if the user asks for a calculator, provide only the Python code tha
                 'Authorization': `Bearer ${apiKey}`,
             },
             body: JSON.stringify({
-                model: 'gpt-3.5-turbo', // Use 'gpt-4' if you have access
+                model: 'gpt-4o-2024-05-13', // Use your specified model
                 messages: messages,
-                max_tokens: 500,
+                max_tokens: 2000,
             }),
         });
 

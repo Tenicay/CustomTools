@@ -1,4 +1,4 @@
-/* styles.css */
+/* style.css */
 
 /* General Styles */
 body {
@@ -60,8 +60,6 @@ body {
     box-sizing: border-box;
     overflow-y: auto;
     background-color: #fafafa;
-    display: flex;
-    flex-direction: column;
 }
 
 #code-section h2 {
@@ -69,22 +67,7 @@ body {
 }
 
 #code-execution-container {
-    flex: 1;
-    /* Allow the container to expand and scroll if needed */
-    overflow-y: auto;
-}
-
-#code-execution-container input,
-#code-execution-container button {
-    display: block;
-    margin: 10px 0;
-    padding: 10px;
-    font-size: 16px;
-}
-
-#result {
-    margin-top: 10px;
-    font-size: 18px;
+    /* Styles for the container where the code is injected */
 }
 
 /* Responsive Design for Smaller Screens */

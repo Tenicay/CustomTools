@@ -10,28 +10,21 @@ function appendMessage(sender, message) {
 }
 
 // Function to inject and execute PyScript code
-function injectPyScript(code) {
+function injectCode(code) {
     const container = document.getElementById('code-execution-container');
 
-    // Remove previous <py-script> elements
-    const existingPyScripts = container.querySelectorAll('py-script');
-    existingPyScripts.forEach((el) => el.remove());
+    // Log the code being injected for debugging
+    console.log('Injecting code:', code);
 
-    // Create a new py-script element
-    const pyScriptElement = document.createElement('py-script');
-    pyScriptElement.innerHTML = code;
+    // Clear previous content
+    container.innerHTML = '';
 
-    // Append the py-script element to the container
-    container.appendChild(pyScriptElement);
+    // Inject the code directly into the container
+    container.innerHTML = code;
 
-    // Execute the code
-    executePyScript(pyScriptElement);
-}
-
-// Function to execute PyScript code
-function executePyScript(element) {
-    if (window.pyodide && window.pyscript) {
-        window.pyscript.runElement(element);
+    // Re-evaluate PyScript to execute the new code
+    if (window.pyscript && window.pyodide) {
+        window.pyscript.main();
     } else {
         console.error('PyScript is not loaded.');
     }
@@ -63,7 +56,7 @@ document.getElementById('send-button').addEventListener('click', async () => {
             appendMessage('Bot', 'Here is the code for your request.');
 
             // Inject and execute the bot's code
-            injectPyScript(botReply);
+            injectCode(botReply);
         } else {
             const errorData = await response.json();
             appendMessage('Bot', `Error: ${errorData.error || 'An error occurred.'}`);
