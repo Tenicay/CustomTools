@@ -1,12 +1,12 @@
 // functions/chat.js
 
-const { Configuration, OpenAIApi } = require('openai');
+const openai = require('openai'); // Import the entire openai module
 
-const configuration = new Configuration({
+const configuration = new openai.Configuration({
   apiKey: process.env.OPENAI_API_KEY, // Ensure this environment variable is set in Netlify
 });
 
-const openai = new OpenAIApi(configuration);
+const api = new openai.OpenAIApi(configuration); // Instantiate OpenAIApi with the configuration
 
 exports.handler = async function (event, context) {
   try {
@@ -32,7 +32,7 @@ print("Hello, World!")
 `;
 
     // Create a chat completion
-    const completion = await openai.createChatCompletion({
+    const completion = await api.createChatCompletion({
       model: 'gpt-3.5-turbo', // Use 'gpt-4' if you have access
       messages: [
         { role: 'system', content: systemPrompt },
@@ -57,7 +57,12 @@ print("Hello, World!")
 
     // Determine the error message to return
     let errorMessage = 'An error occurred while processing your request.';
-    if (error.response && error.response.data && error.response.data.error && error.response.data.error.message) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.error &&
+      error.response.data.error.message
+    ) {
       errorMessage = error.response.data.error.message;
     } else if (error.message) {
       errorMessage = error.message;

@@ -1,6 +1,6 @@
-// netlify/functions/execute.js
+// functions/execute.js
 
-const fetch = require('node-fetch');
+const fetch = require('node-fetch'); // Using node-fetch v2
 
 exports.handler = async function(event, context) {
     try {
@@ -34,7 +34,7 @@ exports.handler = async function(event, context) {
         }
 
         // Extract Python code from the chatbot's response
-        const codeBlockMatch = code.match(/```python([\s\S]*?)```/);
+        const codeBlockMatch = code.match(/<py-script>([\s\S]*?)<\/py-script>/);
         if (!codeBlockMatch) {
             return {
                 statusCode: 400,
