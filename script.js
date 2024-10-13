@@ -1,3 +1,5 @@
+// scripts.js
+
 // Function to append messages to the chat container
 function appendMessage(sender, message) {
     const chatContainer = document.getElementById('chat-container');
@@ -45,8 +47,11 @@ document.getElementById('send-button').addEventListener('click', async () => {
             body: JSON.stringify({ message: userInput }),
         });
 
+        console.log('Fetch Response:', response);
+
         if (response.ok) {
             const data = await response.json();
+            console.log('Response Data:', data);
             const botReply = data.reply;
             appendMessage('Bot', botReply);
 
@@ -66,6 +71,7 @@ document.getElementById('send-button').addEventListener('click', async () => {
             }
         } else {
             const errorData = await response.json();
+            console.error('Error Data:', errorData);
             appendMessage('Bot', `Error: ${errorData.error || 'Unknown error occurred.'}`);
         }
     } catch (error) {
