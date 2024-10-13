@@ -1,4 +1,4 @@
-// scripts.js
+// script.js
 
 // Function to append messages to the chat container
 function appendMessage(sender, message) {
@@ -9,25 +9,18 @@ function appendMessage(sender, message) {
     chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
-// Function to inject PyScript code into the container and display output
+// Function to inject code into the container and display output
 function injectPyScript(code) {
     const container = document.getElementById('code-execution-container');
-    const outputDiv = document.getElementById('output');
-    
+
     // Log the code being injected for debugging
-    console.log('Injecting PyScript code:', code);
+    console.log('Injecting code:', code);
 
-    // Clear previous code and output
+    // Clear previous code
     container.innerHTML = '';
-    outputDiv.textContent = '';
 
-    // Create a new py-script element
-    const pyScriptElement = document.createElement('py-script');
-    pyScriptElement.setAttribute('output', 'output');
-    pyScriptElement.innerHTML = code;
-
-    // Append the py-script element to the container
-    container.appendChild(pyScriptElement);
+    // Inject the code directly into the container
+    container.innerHTML = code;
 }
 
 // Event listener for the Send button
@@ -47,31 +40,18 @@ document.getElementById('send-button').addEventListener('click', async () => {
             body: JSON.stringify({ message: userInput }),
         });
 
-        console.log('Fetch Response:', response);
-
         if (response.ok) {
             const data = await response.json();
-            console.log('Response Data:', data);
             const botReply = data.reply;
             appendMessage('Bot', botReply);
 
-            // Extract PyScript code from the bot's reply
-            const pyScriptMatch = botReply.match(/<py-script>([\s\S]*?)<\/py-script>/i);
-            if (pyScriptMatch) {
-                const pyScriptCode = pyScriptMatch[1].trim();
-                
-                // Log the extracted PyScript code for debugging
-                console.log('Extracted PyScript code:', pyScriptCode);
+            // Log the bot's reply for debugging
+            console.log('Bot Reply:', botReply);
 
-                injectPyScript(pyScriptCode);
-            } else if (data.error) {
-                appendMessage('Bot', `Error: ${data.error}`);
-            } else {
-                console.warn('No <py-script> code found and no error message provided.');
-            }
+            // Inject the bot's reply directly
+            injectPyScript(botReply);
         } else {
             const errorData = await response.json();
-            console.error('Error Data:', errorData);
             appendMessage('Bot', `Error: ${errorData.error || 'Unknown error occurred.'}`);
         }
     } catch (error) {

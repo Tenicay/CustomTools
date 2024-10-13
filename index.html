@@ -3,23 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Python Code Runner Chatbot</title>
-    <!-- Removed CSP meta tag to avoid conflicts -->
-    <!-- Include PyScript CSS and JS -->
-    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css">
-    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
-    <!-- Link External CSS -->
     <link rel="stylesheet" href="style.css">
+    <!-- Include PyScript CSS -->
+    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css">
+    <!-- Include PyScript JS -->
+    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
 </head>
 <body>
     <h1>Python Code Runner Chatbot</h1>
     <div id="main-container">
         <!-- Chat Section -->
         <div id="chat-section">
-            <h2>Chat</h2>
-            <div id="chat-container">
-                <!-- Chat messages will appear here -->
-            </div>
-            <div id="user-input-container">
+            <div id="chat-container"></div>
+            <div id="input-container">
                 <input type="text" id="user-input" placeholder="Type your message...">
                 <button id="send-button">Send</button>
             </div>
@@ -27,11 +23,8 @@
         <!-- Code Execution Section -->
         <div id="code-section">
             <h2>Code Execution</h2>
-            <!-- Container to Inject Generated PyScript Code -->
-            <div id="code-execution-container">
-                <!-- Generated PyScript code will be injected here -->
-            </div>
-            <!-- Output Display -->
+            <div id="code-execution-container"></div>
+            <!-- Output div (if needed) -->
             <div id="output"></div>
         </div>
     </div>

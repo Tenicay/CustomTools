@@ -1,63 +1,48 @@
 /* styles.css */
 
+/* General Styles */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
 }
 
-h1 {
-    text-align: center;
-    padding: 10px;
-    background-color: #f2f2f2;
-    margin: 0;
-    border-bottom: 1px solid #ccc;
-}
-
+/* Main Container */
 #main-container {
     display: flex;
-    flex: 1;
-    overflow: hidden;
+    height: calc(100vh - 60px); /* Adjust based on header height */
 }
 
+/* Chat Section */
 #chat-section {
-    width: 35%;
+    width: 40%; /* Adjust as needed */
     border-right: 1px solid #ccc;
-    padding: 20px;
-    box-sizing: border-box;
     display: flex;
     flex-direction: column;
 }
 
 #chat-container {
     flex: 1;
-    border: 1px solid #ccc;
-    padding: 10px;
+    padding: 20px;
     overflow-y: auto;
-    margin-bottom: 10px;
-    background-color: #fff;
 }
 
-#user-input-container {
+#input-container {
     display: flex;
+    padding: 10px;
+    border-top: 1px solid #ccc;
 }
 
 #user-input {
     flex: 1;
     padding: 10px;
     font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
 }
 
 #send-button {
     padding: 10px 20px;
     font-size: 16px;
     margin-left: 10px;
-    cursor: pointer;
     background-color: #4CAF50;
     color: white;
     border: none;
@@ -68,12 +53,15 @@ h1 {
     background-color: #45a049;
 }
 
+/* Code Execution Section */
 #code-section {
     flex: 1;
     padding: 20px;
     box-sizing: border-box;
     overflow-y: auto;
     background-color: #fafafa;
+    display: flex;
+    flex-direction: column;
 }
 
 #code-section h2 {
@@ -81,7 +69,9 @@ h1 {
 }
 
 #code-execution-container {
-    margin-top: 20px;
+    flex: 1;
+    /* Allow the container to expand and scroll if needed */
+    overflow-y: auto;
 }
 
 #output {
@@ -93,6 +83,11 @@ h1 {
     max-height: 200px;
     overflow-y: auto;
     border-radius: 4px;
+}
+
+/* Adjust injected content */
+#code-execution-container > * {
+    margin-top: 10px;
 }
 
 /* Responsive Design for Smaller Screens */
