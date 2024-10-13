@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Python Code Runner Chatbot</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles.css">
     <!-- Include PyScript CSS -->
     <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css">
     <!-- Include PyScript JS -->
@@ -23,9 +23,13 @@
         <!-- Code Execution Section -->
         <div id="code-section">
             <h2>Code Execution</h2>
-            <div id="code-execution-container"></div>
-            <!-- Output div (if needed) -->
-            <div id="output"></div>
+            <div id="code-execution-container">
+                <!-- Predefined HTML elements for interaction -->
+                <input type="number" id="num1" placeholder="First Number">
+                <input type="number" id="num2" placeholder="Second Number">
+                <button id="calculate-btn">Calculate</button>
+                <div id="result">Result: <span id="result-value"></span></div>
+            </div>
         </div>
     </div>
     <!-- Link External JS -->

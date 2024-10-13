@@ -1,36 +1,22 @@
 // functions/chat.js
 
-const fetch = require('node-fetch'); // Use require for CommonJS
+const fetch = require('node-fetch');
 
 exports.handler = async function (event, context) {
     try {
-        console.log('Event Body:', event.body);
         const body = JSON.parse(event.body);
         const userMessage = body.message;
-        console.log('User Message:', userMessage);
 
         const apiKey = process.env.OPENAI_API_KEY;
 
         const systemPrompt = `
 You are a coding assistant specialized in generating Python code that can be executed in the browser using PyScript.
 
-When a user requests code, provide only the necessary HTML and Python code that can be directly injected into an HTML container and rendered correctly. Do not include code fences, markdown formatting, or additional explanations. Ensure that the code is syntactically correct and ready to be executed with PyScript.
+When a user requests functionality, provide only the Python code needed, without any HTML or additional text. The code should be ready to execute in a <py-script> tag.
 
-For example, if the user asks for a script to print "Hello, World!" with a button, you should respond:
+Do not include any markdown formatting, code fences, or explanations.
 
-<div>
-    <button id="hello-button">Say Hello</button>
-    <py-script>
-        from js import document
-
-        def say_hello(event):
-            print("Hello, World!")
-
-        document.getElementById('hello-button').addEventListener('click', say_hello)
-    </py-script>
-</div>
-
-Do not include any markdown formatting or triple backticks in your response.
+For example, if the user asks for a calculator, provide only the Python code that implements the calculator logic, assuming the necessary HTML elements are already present in the page.
 `;
 
         const messages = [
@@ -38,7 +24,6 @@ Do not include any markdown formatting or triple backticks in your response.
             { role: 'user', content: userMessage },
         ];
 
-        // Make a POST request to the OpenAI API
         const response = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
             headers: {
@@ -46,20 +31,16 @@ Do not include any markdown formatting or triple backticks in your response.
                 'Authorization': `Bearer ${apiKey}`,
             },
             body: JSON.stringify({
-                model: 'gpt-4o-2024-05-13', // Use 'gpt-4' if you have access
+                model: 'gpt-3.5-turbo', // Use 'gpt-4' if you have access
                 messages: messages,
-                max_tokens: 2000,
+                max_tokens: 500,
             }),
         });
 
         const data = await response.json();
 
         if (response.ok) {
-            console.log('OpenAI API Response:', data);
-
             const assistantReply = data.choices[0].message.content.trim();
-            console.log('Assistant Reply:', assistantReply);
-
             return {
                 statusCode: 200,
                 body: JSON.stringify({ reply: assistantReply }),
@@ -68,14 +49,14 @@ Do not include any markdown formatting or triple backticks in your response.
             console.error('OpenAI API Error:', data);
             return {
                 statusCode: 500,
-                body: JSON.stringify({ error: data.error.message || 'An error occurred while processing your request.' }),
+                body: JSON.stringify({ error: data.error.message || 'An error occurred.' }),
             };
         }
     } catch (error) {
-        console.error('Error in chat.js:', error.message);
+        console.error('Error in chat.js:', error);
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: error.message || 'An error occurred while processing your request.' }),
+            body: JSON.stringify({ error: 'Internal Server Error' }),
         };
     }
 };
