@@ -31,7 +31,7 @@ print("Hello, World!")
 
     // Since version 3.x does not support createChatCompletion, use createCompletion
     const response = await openai.createCompletion({
-      model: 'text-davinci-003',
+      model: 'gpt-4o-2024-05-13',
       prompt: `${systemPrompt}\nUser: ${userMessage}\nAssistant:`,
       max_tokens: 2000,
       temperature: 0.7,
