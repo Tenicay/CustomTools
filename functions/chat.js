@@ -1,14 +1,14 @@
 // functions/chat.js
 
-import { Configuration, OpenAIApi } from 'openai'; // Use import instead of require
+const { Configuration, OpenAIApi } = require('openai'); // Use require for CommonJS
 
 const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY, // Ensure this environment variable is set in Netlify
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 const openai = new OpenAIApi(configuration);
 
-export async function handler(event, context) {
+exports.handler = async function (event, context) {
   try {
     console.log('Event Body:', event.body);
     const body = JSON.parse(event.body);
@@ -29,18 +29,18 @@ print("Hello, World!")
 </py-script>
 `;
 
-    const completion = await openai.createChatCompletion({
-      model: 'gpt-3.5-turbo', // Use 'gpt-4' if you have access
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userMessage },
-      ],
+    // Since version 3.x does not support createChatCompletion, use createCompletion
+    const response = await openai.createCompletion({
+      model: 'text-davinci-003',
+      prompt: `${systemPrompt}\nUser: ${userMessage}\nAssistant:`,
       max_tokens: 2000,
+      temperature: 0.7,
+      stop: null,
     });
 
-    console.log('OpenAI API Response:', completion.data);
+    console.log('OpenAI API Response:', response.data);
 
-    const assistantReply = completion.data.choices[0].message.content;
+    const assistantReply = response.data.choices[0].text.trim();
     console.log('Assistant Reply:', assistantReply);
 
     return {
@@ -51,7 +51,7 @@ print("Hello, World!")
     console.error('Error in chat.js:', error.response ? error.response.data : error.message);
 
     let errorMessage = 'An error occurred while processing your request.';
-    if (error.response?.data?.error?.message) {
+    if (error.response && error.response.data && error.response.data.error && error.response.data.error.message) {
       errorMessage = error.response.data.error.message;
     } else if (error.message) {
       errorMessage = error.message;
@@ -62,4 +62,4 @@ print("Hello, World!")
       body: JSON.stringify({ error: errorMessage }),
     };
   }
-}
+};

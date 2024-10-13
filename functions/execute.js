@@ -1,8 +1,8 @@
 // functions/execute.js
 
-import fetch from 'node-fetch'; // Use import statement
+const fetch = require('node-fetch'); // Use require for CommonJS
 
-export async function handler(event, context) {
+exports.handler = async function (event, context) {
   try {
     // Only allow POST requests
     if (event.httpMethod !== 'POST') {
@@ -87,4 +87,4 @@ export async function handler(event, context) {
       body: JSON.stringify({ error: 'Internal Server Error' }),
     };
   }
-}
+};
